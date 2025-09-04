@@ -1,4 +1,15 @@
 package com.back.domain.user.user.entity;
 
-public class User {
+import com.back.global.jpa.BaseEntity;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+
+@Getter
+@Entity
+public class User extends BaseEntity {
+
+    private String username;
+    private String password;
+    private String email;
+    private String role;
 }
