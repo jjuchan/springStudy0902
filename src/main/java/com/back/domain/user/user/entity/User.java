@@ -1,9 +1,11 @@
 package com.back.domain.user.user.entity;
 
 import com.back.global.jpa.BaseEntity;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -13,5 +15,8 @@ public class User extends BaseEntity {
     private String username;
     private String password;
     private String email;
-    private String role;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<Role> roles;
 }
