@@ -1,5 +1,6 @@
 package com.back.domain.user.user.service;
 
+import com.back.domain.user.user.entity.Role;
 import com.back.domain.user.user.entity.User;
 import com.back.domain.user.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public class UserService {
         password = passwordEncoder.encode(password);
 
         User user = new User(username, password, nickname, email);
-        System.out.println(user);
+
+        user.getRoles().add(Role.GENERAL);
         return userRepository.save(user);
     }
 }
