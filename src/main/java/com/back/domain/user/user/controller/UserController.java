@@ -1,47 +1,44 @@
 package com.back.domain.user.user.controller;
 
-import com.back.domain.user.user.dto.JoinForm;
-import com.back.domain.user.user.dto.LoginForm;
+import com.back.domain.user.user.dto.UserDto;
+import com.back.domain.user.user.dto.UserJoinReq;
+import com.back.domain.user.user.entity.User;
+import com.back.domain.user.user.service.UserService;
+import com.back.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/user")
-@Controller
+@RequiredArgsConstructor
+@RestController
 public class UserController {
+    private final UserService userService;
 
-    @GetMapping("/login")
-    public String loginPage(LoginForm loginForm) {
-        return "user/login";
+    @Operation(summary = "내 정보")
+    @Transactional(readOnly = true)
+    @GetMapping("/me/{id}")
+    public RsData<UserDto> me(@PathVariable Long id) {
+        User user = userService.findById(id)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+
+        return new RsData<>(
+                "200-1",
+                "%s 님 정보입니다.".formatted(user.getNickname()),
+                new UserDto(user)
+        );
     }
 
-    @PostMapping("/login")
-    public String login(@Valid LoginForm loginForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "user/login";
-        }
 
-        return "redirect:/post/list";
-    }
-
-    @GetMapping("/join")
-    public String joinPage(JoinForm joinForm) {
-
-        return "user/join";
-    }
-
-    @PostMapping("/join")
-    public String join(@Valid JoinForm joinForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "user/join";
-        }
-        if (!joinForm.getPassword1().equals(joinForm.getPassword2())) {
-            bindingResult.rejectValue("password2", "passwordnotmatch", "비밀번호가 일치하지 않습니다.");
-            return "user/join";
-        }
-        return "redirect:/post/list";
+    @PostMapping
+    public RsData<UserDto> join(@Valid @RequestBody UserJoinReq userJoinReq) {
+         User user = userService.join(userJoinReq.getUsername(),userJoinReq.getPassword(),userJoinReq.getNickname(),userJoinReq.getEmail());
+        return new RsData<>(
+                "200-1",
+                "%s 님 환영합니다.".formatted(user.getUsername()),
+                new UserDto(user)
+        );
     }
 }

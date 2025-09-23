@@ -7,20 +7,14 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @ToString
 @Data
-public class JoinForm {
+public class LoginReq {
+
     @Size(min = 3, max = 20)
     @NotBlank(message = "아이디는 필수 항목입니다.")
     private String username;
 
     @Size(min = 8, max = 20)
     @NotBlank(message = "비밀번호는 필수 항목입니다.")
-    private String password1;
+    private String password;
 
-    @Size(min = 8, max = 20)
-    @NotBlank(message = "비밀번호 확인은 필수 항목입니다.")
-    private String password2;
-
-
-    @NotBlank(message = "이메일은 필수 항목입니다.")
-    private String email;
 }

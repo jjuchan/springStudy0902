@@ -25,19 +25,25 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.security:spring-security-test")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("com.h2database:h2")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	// 벨리데이션
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	// DB 관련
+	runtimeOnly("com.h2database:h2")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	// spring doc
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+	// jwt
+	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 }
 
 tasks.withType<Test> {
