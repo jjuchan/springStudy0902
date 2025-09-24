@@ -1,5 +1,7 @@
 package com.back.domain.user.user.controller;
 
+import com.back.domain.user.user.dto.LoginReq;
+import com.back.domain.user.user.dto.LoginRes;
 import com.back.domain.user.user.dto.UserDto;
 import com.back.domain.user.user.dto.UserJoinReq;
 import com.back.domain.user.user.entity.User;
@@ -8,6 +10,7 @@ import com.back.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,24 +24,29 @@ public class UserController {
     @Transactional(readOnly = true)
     @GetMapping("/me/{id}")
     public RsData<UserDto> me(@PathVariable Long id) {
-        User user = userService.findById(id)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+        User user = userService.findById(id).orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
 
-        return new RsData<>(
-                "200-1",
-                "%s 님 정보입니다.".formatted(user.getNickname()),
-                new UserDto(user)
-        );
+        return new RsData<>("200-1", "%s 님 정보입니다.".formatted(user.getNickname()), new UserDto(user));
     }
 
-
     @PostMapping
+    @Operation(summary = "회원가입")
     public RsData<UserDto> join(@Valid @RequestBody UserJoinReq userJoinReq) {
-         User user = userService.join(userJoinReq.getUsername(),userJoinReq.getPassword(),userJoinReq.getNickname(),userJoinReq.getEmail());
-        return new RsData<>(
-                "200-1",
-                "%s 님 환영합니다.".formatted(user.getUsername()),
-                new UserDto(user)
-        );
+        User user = userService.join(userJoinReq.getUsername(), userJoinReq.getPassword(), userJoinReq.getNickname(), userJoinReq.getEmail());
+        return new RsData<>("200-1", "%s 님 환영합니다. 회원가입이 완료되었습니다.".formatted(user.getUsername()), new UserDto(user));
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "로그인")
+    public RsData<LoginRes> login(@Valid @RequestBody LoginReq loginReq) {
+        User user = userService.findByUsername(loginReq.getUsername()).orElseThrow(() -> new ServiceException("존재하지 않는 회원입니다."));
+        return new RsData<>("200-1", "%s 님 환영합니다.".formatted(user.getUsername()), new LoginRes(new UserDto(user)));
+    }
+
+    @DeleteMapping("/logout")
+    @Operation(summary = "로그아웃")
+    public RsData<Void> logout() {
+
+        return new RsData<>("200-1", "로그아웃 되었습니다.");
     }
 }

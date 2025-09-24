@@ -37,4 +37,8 @@ public class UserService {
         user.getRoles().add(Role.GENERAL);
         return userRepository.save(user);
     }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }
