@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +39,9 @@ public class User extends BaseEntity {
         this.nickname = nickname;
         this.email = email;
 
+    }
+
+    public void changePassword(String newPassword, PasswordEncoder encoder) {
+        this.password = encoder.encode(newPassword);
     }
 }

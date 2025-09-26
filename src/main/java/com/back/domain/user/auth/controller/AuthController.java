@@ -1,5 +1,6 @@
 package com.back.domain.user.auth.controller;
 
+import com.back.domain.user.auth.dto.FindByPassWordReq;
 import com.back.domain.user.auth.dto.FindIdReq;
 import com.back.domain.user.auth.dto.FindIdRes;
 import com.back.domain.user.user.entity.User;
@@ -9,10 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,4 +27,17 @@ public class AuthController {
         return new RsData<>("200-1", "회원님의 아이디는 %s 입니다.".formatted(user.getUsername()));
     }
 
+    @PutMapping("updatePassword")
+    @Operation(summary = "비밀번호 변경")
+    public RsData<Void> updatePassword(@Valid @RequestBody FindByPassWordReq findByPassWordReq) {
+        User user = userService.findByUsername(findByPassWordReq.getUsername()).orElseThrow(() -> new ServiceException("존재하지 않는 회원입니다."));
+
+        if (!user.getEmail().equals(findByPassWordReq.getEmail())) {
+            throw new ServiceException("이메일이 일치하지 않습니다.");
+        }
+
+        userService.updatePassword(user, findByPassWordReq.getNewPassword());
+
+        return new RsData<>("200-1", "회원님의 비밀번호가 변경되었습니다.");
+    }
 }
