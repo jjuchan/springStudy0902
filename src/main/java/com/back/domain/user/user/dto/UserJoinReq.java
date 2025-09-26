@@ -17,7 +17,7 @@ public class UserJoinReq {
     private String password;
 
     @Size(min = 2, max = 20)
-    @NotBlank
+    @NotBlank(message = "닉네임은 필수 항목입니다.")
     private String nickname;
 
     @NotBlank(message = "이메일은 필수 항목입니다.")

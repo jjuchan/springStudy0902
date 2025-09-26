@@ -16,9 +16,16 @@ import java.util.List;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    @Column(unique = true,nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(unique = true,nullable = false)
     private String nickname;
+
+    @Column(unique = true,nullable = false)
     private String email;
 
     @ElementCollection(fetch = FetchType.EAGER)
